@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>تطبيق قوتك - Qawtak</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        purplebrand: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            900: '#581c87',
+                        },
+                        darkbg: '#090514',
+                        darkcard: '#130d24',
+                        darkborder: '#271a44'
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            background-color: #090514;
+            color: #f3e8ff;
+        }
+        
+        .pulse-btn-danger {
+            animation: pulse-ring-danger 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse-ring-danger {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            50% { transform: scale(1.02); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+        }
+
+        .breathe-circle {
+            animation: breathe 19s infinite ease-in-out;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            21% { transform: scale(1.35); }
+            58% { transform: scale(1.35); }
+            100% { transform: scale(1); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .purple-glow {
+            box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-purplebrand-600 selection:text-white pb-24">
+
+    <!-- Header App Bar -->
+    <header class="sticky top-0 z-40 bg-[#090514]/90 backdrop-blur-md border-b border-[#271a44] px-4 py-3">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purplebrand-700 via-purplebrand-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purplebrand-500/30">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-wide text-white leading-tight">قُوّتك</h1>
+                    <p class="text-[10px] text-purplebrand-400 font-bold">طريقك للحرية والاستعادة</p>
+                </div>
+            </div>
+            
+            <button onclick="openModal('emergency')" class="pulse-btn-danger bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-rose-600/30">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>أزمة رغبة</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto w-full px-4 pt-4 space-y-5 flex-1">
+
+        <!-- TAB 1: STREAK & DAILY CHECK-IN -->
+        <section id="tab-home" class="space-y-5">
+            
+            <!-- Streak Main Card -->
+            <div class="bg-gradient-to-b from-[#170e2e] to-[#0d071b] border border-[#271a44] rounded-3xl p-6 text-center shadow-2xl relative overflow-hidden purple-glow">
+                <!-- Glowing Background Circles -->
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-purplebrand-600/20 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-600/20 rounded-full blur-3xl"></div>
+
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purplebrand-500/10 text-purplebrand-400 border border-purplebrand-500/20 mb-3">
+                    <i class="fa-solid fa-fire text-amber-400"></i> العداد الحالي للصمود
+                </span>
+
+                <!-- Counter Display -->
+                <div class="grid grid-cols-4 gap-2 my-3">
+                    <div class="bg-[#090514]/90 p-2.5 rounded-2xl border border-[#271a44]">
+                        <span id="streak-days" class="block text-2xl font-black text-white">0</span>
+                        <span class="text-[10px] text-purplebrand-300/70 font-bold">يوم</span>
+                    </div>
+                    <div class="bg-[#090514]/90 p-2.5 rounded-2xl border border-[#271a44]">
+                        <span id="streak-hours" class="block text-2xl font-black text-white">00</span>
+                        <span class="text-[10px] text-purplebrand-300/70 font-bold">ساعة</span>
+                    </div>
+                    <div class="bg-[#090514]/90 p-2.5 rounded-2xl border border-[#271a44]">
+                        <span id="streak-minutes" class="block text-2xl font-black text-white">00</span>
+                        <span class="text-[10px] text-purplebrand-300/70 font-bold">دقيقة</span>
+                    </div>
+                    <div class="bg-[#090514]/90 p-2.5 rounded-2xl border border-[#271a44]">
+                        <span id="streak-seconds" class="block text-2xl font-black text-purplebrand-400">00</span>
+                        <span class="text-[10px] text-purplebrand-300/70 font-bold">ثانية</span>
+                    </div>
+                </div>
+
+                <!-- Rank & Badge -->
+                <div class="mt-4 pt-3 border-t border-[#271a44] flex justify-between items-center text-xs">
+                    <div class="text-right">
+                        <span class="text-purplebrand-300/60 block text-[10px]">الرتبة الحالية:</span>
+                        <strong id="user-rank" class="text-purplebrand-400 font-bold">محارب مبتدئ 🛡️</strong>
+                    </div>
+                    <div class="text-left">
+                        <span class="text-purplebrand-300/60 block text-[10px]">أفضل إنجاز:</span>
+                        <strong id="best-streak" class="text-white font-bold">0 أيام</strong>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="mt-4">
+                    <div class="flex justify-between text-[11px] text-purplebrand-300/70 mb-1">
+                        <span>الهدف القادم: <span id="next-goal" class="text-white font-bold">3 أيام</span></span>
+                        <span id="goal-percentage" class="text-purplebrand-400 font-bold">0%</span>
+                    </div>
+                    <div class="w-full bg-[#090514] h-2.5 rounded-full overflow-hidden border border-[#271a44]">
+                        <div id="streak-progress" class="bg-gradient-to-r from-purplebrand-600 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAILY CHECK-IN CARD -->
+            <div id="daily-checkin-card" class="bg-[#130d24] border border-[#271a44] rounded-2xl p-5 space-y-4 shadow-xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-purplebrand-500/20 text-purplebrand-400 flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <h2 class="text-xs font-extrabold text-white">التأكيد اليومي للإنجاز</h2>
+                    </div>
+                    <span id="checkin-date" class="text-[10px] text-purplebrand-400 bg-purplebrand-500/10 px-2 py-0.5 rounded-md border border-purplebrand-500/20">اليوم</span>
+                </div>
+
+                <p class="text-xs text-purplebrand-200/80 leading-relaxed">
+                    هل أتممت هذا اليوم بنجاح وصمود بدون مشاهدة إباحية أو ممارسة العادة السرية؟
+                </p>
+
+                <div id="checkin-actions" class="grid grid-cols-2 gap-3 pt-1">
+                    <button onclick="handleCheckinSuccess()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition">
+                        <i class="fa-solid fa-circle-check"></i> نعم، صمدت بنجاح
+                    </button>
+                    <button onclick="openRelapseForm()" class="bg-gradient-to-r from-rose-900/60 to-rose-800/60 hover:from-rose-800 hover:to-rose-700 text-rose-200 border border-rose-700/50 py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+                        <i class="fa-solid fa-circle-xmark"></i> لا، للأسف انتكست
+                    </button>
+                </div>
+
+                <!-- Success Banner (Hidden by default) -->
+                <div id="checkin-success-banner" class="hidden bg-emerald-950/40 border border-emerald-800/60 p-3 rounded-xl text-center space-y-1">
+                    <span class="text-xs font-bold text-emerald-400 block"><i class="fa-solid fa-award"></i> كفو يا بطل! تم توثيق إنجاز اليوم</span>
+                    <p class="text-[11px] text-emerald-200">استمر بطلتك القوية وإرادتك الحديدية، حرّيتك تستحق كل لحظة صمود.</p>
+                </div>
+            </div>
+
+            <!-- Daily Risk Highlight -->
+            <div class="bg-[#130d24] border border-[#271a44] rounded-2xl p-4 space-y-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-bold text-rose-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-biohazard"></i> أثر سلبي اليوم للإدمان
+                    </h2>
+                    <span class="text-[10px] bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded-md border border-rose-500/20">توعية</span>
+                </div>
+                <p id="daily-risk-text" class="text-xs text-purplebrand-200/80 leading-relaxed font-medium">
+                    جاري التحميل...
+                </p>
+            </div>
+
+            <!-- Daily Religious Highlight -->
+            <div class="bg-[#130d24] border border-[#271a44] rounded-2xl p-4 space-y-2">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-bold text-purplebrand-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-book-quran"></i> آية / حديث اليوم
+                    </h2>
+                    <span class="text-[10px] bg-purplebrand-500/10 text-purplebrand-400 px-2 py-0.5 rounded-md border border-purplebrand-500/20">زاد إيماني</span>
+                </div>
+                <p id="daily-religious-text" class="text-xs text-purplebrand-200/80 leading-relaxed font-medium">
+                    جاري التحميل...
+                </p>
+            </div>
+        </section>
+
+        <!-- TAB 2: RISKS & EFFECTS -->
+        <section id="tab-risks" class="space-y-4 hidden">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-base font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-rose-500"></i> مخاطر وأضرار الإدمان
+                </h2>
+                <span class="text-xs text-purplebrand-300/60">وعي يحميك</span>
+            </div>
+            
+            <div id="risks-container" class="space-y-3">
+                <!-- Dynamically Inserted -->
+            </div>
+        </section>
+
+        <!-- TAB 3: MOTIVATION -->
+        <section id="tab-motivation" class="space-y-4 hidden">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-base font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-bolt text-amber-400"></i> مركز التحفيز والخطوات
+                </h2>
+                <span class="text-xs text-purplebrand-300/60">استمر بقوة</span>
+            </div>
+
+            <div id="motivation-container" class="space-y-3">
+                <!-- Dynamically Inserted -->
+            </div>
+        </section>
+
+        <!-- TAB 4: SPIRITUAL SUPPORT -->
+        <section id="tab-spiritual" class="space-y-4 hidden">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-base font-extrabold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-moon text-purplebrand-400"></i> القسم الديني والأخلاقي
+                </h2>
+                <span class="text-xs text-purplebrand-300/60">ثبات وتوبة</span>
+            </div>
+
+            <div id="spiritual-container" class="space-y-3">
+                <!-- Dynamically Inserted -->
+            </div>
+        </section>
+
+        <!-- TAB 5: AI CHAT ASSISTANT -->
+        <section id="tab-ai" class="space-y-3 hidden flex flex-col h-[calc(100vh-180px)]">
+            <div class="flex justify-between items-center bg-[#130d24] border border-[#271a44] p-3 rounded-2xl">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-purplebrand-700 to-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-md shadow-purplebrand-500/30">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xs font-extrabold text-white">المساعد الذكي للدعم والتحليل</h2>
+                        <p class="text-[9px] text-purplebrand-400 font-semibold">متصل لمساعدتك وتحليل أسباب الانتكاس</p>
+                    </div>
+                </div>
+                <button onclick="clearChatHistory()" class="text-[10px] text-purplebrand-300/70 hover:text-rose-400 bg-[#090514] px-2 py-1 rounded-lg border border-[#271a44] transition">
+                    <i class="fa-solid fa-trash-can"></i> مسح
+                </button>
+            </div>
+
+            <!-- Chat Messages Box -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 p-3 bg-[#090514]/70 border border-[#271a44] rounded-2xl">
+                <!-- Dynamic Chat Content -->
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="flex items-center gap-2 bg-[#130d24] border border-[#271a44] p-2 rounded-2xl">
+                <input type="text" id="chat-input" placeholder="اكتب سؤالك أو ما تشعر به الآن..." class="flex-1 bg-[#090514] border border-[#271a44] text-white text-xs rounded-xl px-3 py-2.5 focus:outline-none focus:border-purplebrand-500 placeholder:text-purplebrand-300/40" onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendChatMessage()" id="chat-send-btn" class="bg-gradient-to-tr from-purplebrand-600 to-indigo-600 hover:from-purplebrand-500 hover:to-indigo-500 text-white w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold transition shadow-md shadow-purplebrand-600/30">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#090514]/95 backdrop-blur-lg border-t border-[#271a44] py-2.5 px-2 z-40">
+        <div class="max-w-md mx-auto flex justify-around items-center">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-item text-purplebrand-400 flex flex-col items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-base"></i>
+                <span class="text-[9px] font-bold">العداد</span>
+            </button>
+            <button onclick="switchTab('risks')" id="nav-risks" class="nav-item text-purplebrand-300/50 hover:text-purplebrand-200 flex flex-col items-center gap-1">
+                <i class="fa-solid fa-biohazard text-base"></i>
+                <span class="text-[9px] font-bold">المخاطر</span>
+            </button>
+            <button onclick="switchTab('ai')" id="nav-ai" class="nav-item text-purplebrand-300/50 hover:text-purplebrand-200 flex flex-col items-center gap-1">
+                <i class="fa-solid fa-robot text-base"></i>
+                <span class="text-[9px] font-bold">المساعد الذكي</span>
+            </button>
+            <button onclick="switchTab('motivation')" id="nav-motivation" class="nav-item text-purplebrand-300/50 hover:text-purplebrand-200 flex flex-col items-center gap-1">
+                <i class="fa-solid fa-bolt text-base"></i>
+                <span class="text-[9px] font-bold">تحفيز</span>
+            </button>
+            <button onclick="switchTab('spiritual')" id="nav-spiritual" class="nav-item text-purplebrand-300/50 hover:text-purplebrand-200 flex flex-col items-center gap-1">
+                <i class="fa-solid fa-moon text-base"></i>
+                <span class="text-[9px] font-bold">إيمانيات</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MODAL 1: RELAPSE REASON FORM -->
+    <div id="modal-relapse" class="fixed inset-0 bg-[#090514]/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="bg-[#130d24] border border-[#271a44] w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-[#271a44] pb-3">
+                <h3 class="font-extrabold text-rose-400 flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-heart-crack"></i> تحليل سبب الانتكاسة للتعافي
+                </h3>
+                <button onclick="closeModal('relapse')" class="text-purplebrand-300/60 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-purplebrand-200/80 leading-relaxed">
+                التعافي ليس طلاقاً مع الخطأ، بل هو تعلم من كل كبوة. حدد ما الذي قادك لهذه اللحظة ليحلله المساعد الذكي فوراً ويضع لك حلاً:
+            </p>
+
+            <!-- Quick Reason Chips -->
+            <div class="space-y-2">
+                <label class="text-[11px] font-bold text-purplebrand-300/90 block">أسباب سريعة (اختر ما تنطبق عليك):</label>
+                <div class="flex flex-wrap gap-2" id="relapse-chips">
+                    <button type="button" onclick="toggleChip(this, 'حزن وإحباط')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">😔 حزن وإحباط</button>
+                    <button type="button" onclick="toggleChip(this, 'ملل وفراغ')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">🥱 ملل وفراغ</button>
+                    <button type="button" onclick="toggleChip(this, 'توتر وضغط نفسي')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">شحنة توتر/قلق</button>
+                    <button type="button" onclick="toggleChip(this, 'وسائل التواصل/مثيرات')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">📱 وسائل التواصل/مثيرات</button>
+                    <button type="button" onclick="toggleChip(this, 'سهر وتعب بدني')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">🌙 سهر وتعب</button>
+                    <button type="button" onclick="toggleChip(this, 'العزلة والوحدة')" class="chip-btn border border-[#271a44] bg-[#090514] text-purplebrand-200 text-[11px] px-3 py-1.5 rounded-xl">🚪 وحدة وعزلة</button>
+                </div>
+            </div>
+
+            <!-- Custom Reason Text Area -->
+            <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-purplebrand-300/90 block">اكتب بالتفصيل أسلوبك الخاص (ماذا حدث بالتحديد؟):</label>
+                <textarea id="relapse-custom-text" rows="3" placeholder="مثال: كنت مستلقياً في السرير متأخراً مع الهاتف وبدأت أتصفح انستغرام وشاهدت مقطعاً أثارني..." class="w-full bg-[#090514] border border-[#271a44] rounded-xl p-3 text-xs text-white placeholder:text-purplebrand-300/30 focus:outline-none focus:border-purplebrand-500"></textarea>
+            </div>
+
+            <!-- Submit to AI Button -->
+            <button onclick="submitRelapseToAI()" class="w-full py-3 bg-gradient-to-r from-purplebrand-600 to-indigo-600 hover:from-purplebrand-500 hover:to-indigo-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-purplebrand-600/30 transition">
+                <i class="fa-solid fa-brain"></i> تحليل الأسباب بواسطة الذكاء الاصطناعي وإعطائي حلاً
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EMERGENCY ROOM -->
+    <div id="modal-emergency" class="fixed inset-0 bg-[#090514]/85 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+        <div class="bg-[#130d24] border border-[#271a44] w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-[#271a44] pb-3">
+                <h3 class="font-extrabold text-rose-400 flex items-center gap-2 text-base">
+                    <i class="fa-solid fa-triangle-exclamation"></i> غرفة الطوارئ - ركوب الموجة
+                </h3>
+                <button onclick="closeModal('emergency')" class="text-purplebrand-300/60 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Breathing Exercise -->
+            <div class="text-center bg-[#090514] p-5 rounded-2xl border border-[#271a44] space-y-3">
+                <span class="text-xs text-purplebrand-300 font-bold block">تمرين التنفس السريع (4-7-8)</span>
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-purplebrand-600 to-rose-500 mx-auto flex items-center justify-center breathe-circle shadow-lg shadow-purplebrand-600/30">
+                    <span class="text-xs font-black text-white">تنفس بعمق</span>
+                </div>
+                <p class="text-[11px] text-purplebrand-300/70 leading-relaxed">
+                    شهيق لمدة 4 ثوانٍ، احبس أطول فترة (7 ثوانٍ)، ثم زفير بطيء لمدة 8 ثوانٍ.
+                </p>
+            </div>
+
+            <!-- Quick Distraction Steps -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-white">خطوات سريعة لإطفاء الرغبة الآن:</h4>
+                <ul class="text-xs text-purplebrand-200 space-y-2">
+                    <li class="flex items-start gap-2 bg-[#090514] p-2.5 rounded-xl border border-[#271a44]">
+                        <i class="fa-solid fa-faucet-drip text-cyan-400 mt-0.5"></i>
+                        <span>قم فوراً واغسل وجهك برذاذ من **الماء البارد جداً**.</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-[#090514] p-2.5 rounded-xl border border-[#271a44]">
+                        <i class="fa-solid fa-person-walking text-amber-400 mt-0.5"></i>
+                        <span>غير مكانك فوراً، اخرج إلى الصالة أو مكان فيه ناس.</span>
+                    </li>
+                    <li class="flex items-start gap-2 bg-[#090514] p-2.5 rounded-xl border border-[#271a44]">
+                        <i class="fa-solid fa-mobile-screen text-purplebrand-400 mt-0.5"></i>
+                        <span>ضع الهاتف بعيداً عن يدك تماماً لمدة 15 دقيقة.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Instant Dua -->
+            <div class="bg-purplebrand-950/40 border border-purplebrand-800/50 p-3 rounded-xl text-center space-y-1">
+                <span class="text-[10px] text-purplebrand-400 font-bold block">دعاء العافية والثبات:</span>
+                <p class="text-xs text-purplebrand-200 font-medium leading-relaxed">
+                    "اللَّهُمَّ حَرِّمْ بَشَرَتِي عَلَى النَّارِ، وَثَبِّتْ قَلْبِي عَلَى طَاعَتِكَ، وَاكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ."
+                </p>
+            </div>
+
+            <button onclick="closeModal('emergency')" class="w-full py-3 bg-[#090514] border border-[#271a44] text-white font-bold rounded-xl text-xs transition">
+                أنا بخير، سأستمر في الصمود 👍
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        const STORAGE_KEY = 'qawtak_purple_app_data';
+        const CHAT_STORAGE_KEY = 'qawtak_purple_chat_history';
+        const GEMINI_API_KEY = 'AQ.Ab8RN6KVTGIbq9RVEDZFrHQP48W2NUMMKCd1xTA0m2Cr4IE9hg';
+
+        let appState = {
+            startDate: new Date().toISOString(),
+            bestStreakDays: 0,
+            lastCheckinDate: null
+        };
+
+        let selectedRelapseChips = [];
+        let chatHistory = [];
+
+        // Static Content
+        const risksList = [
+            { id: 1, title: 'ضعف الدوبامين الطبيعي', category: 'عقلي', text: 'الإفراط يقلل عدد مستقبلات الدوبامين بالدماغ، مما يجعلك تفقد الشغف والمتعة بالأنشطة الطبيعية اليومية.' },
+            { id: 2, title: 'ضعف التركيز والذاكرة', category: 'ذهني', text: 'المشاهدة تؤدي لضبابية الدماغ (Brain Fog) وتضعف القدرة على الاستيعاب الحاد والذاكرة القريبة.' },
+            { id: 3, title: 'القلق والاكتئاب المفاجئ', category: 'نفسي', text: 'شعور الذنب المتكرر بعد كل انتكاسة يرفع هرمون الكورتيزول ويجلب مشاعر الضيق والاكتئاب.' },
+            { id: 4, title: 'تشويه النظرة للواقع', category: 'عاطفي', text: 'تجعلك ترى العلاقات البشرية بشكل مادي غير واقعي، مما يخلق صعوبة في بناء علاقات صحية مستقبلاً.' },
+            { id: 5, title: 'الإرهاق والضعف الجسدي', category: 'جسدي', text: 'استنزاف طاقة الجسم وصحة الجهاز العصبي مما يؤدي لشعور بالخمول الدائم والتعب بدون مجهود.' }
+        ];
+
+        const motivationList = [
+            { id: 1, title: 'قاعدة الـ 15 دقيقة', text: 'الرغبة الشديدة كالموجة، تصل لقمة شدتها ثم تتلاشى خلال 15 دقيقة، لا تحاربها بل انتظرها لتعبر.' },
+            { id: 2, title: 'أنت لست أفكارك', text: 'وصول الأفكار أو الصور لذهنك لا يعني أنك ضعيف، الضعف هو الاستجابة لها. دَع الفكرة تمر دون تفاعل.' },
+            { id: 3, title: 'الألم المؤقت أم الألم الممتد؟', text: 'ألم أزمة الرغبة يدوم دقائق، بينما ألم الندم بعد الانتكاسة يدوم أياماً. اختر ألم الإنجاز.' },
+            { id: 4, title: 'استبدال العادة', text: 'الدماغ لا يلغي العادة بل يستبدلها. عندما تشعر بالرغبة، قم بـ 20 تمرين ضغط فوراً.' }
+        ];
+
+        const spiritualList = [
+            { id: 1, type: 'آية قرآنية', content: '﴿قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَى أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا﴾' },
+            { id: 2, type: 'حديث شريف', content: 'قال النبي ﷺ: "إنك لن تدع شيئاً لله عز وجل إلا أبدلك الله به ما هو خير لك منه."' },
+            { id: 3, type: 'دعاء الثبات', content: 'يا مقلب القلوب ثبت قلبي على دينك وطاعتك، اللهم باعد بيني وبين الخطايا كما باعدت بين المشرق والمغرب.' },
+            { id: 4, type: 'آية قرآنية', content: '﴿وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا ۚ وَإِنَّ اللَّهَ لَمَعَ الْمُحْسِنِينَ﴾' }
+        ];
+
+        const ranks = [
+            { days: 0, title: 'محارب مبتدئ 🛡️', next: 3 },
+            { days: 3, title: 'صامد واعي 🌿', next: 7 },
+            { days: 7, title: 'بطل الأسبوع ⚡', next: 14 },
+            { days: 14, title: 'قاهر الشهوات 🗡️', next: 30 },
+            { days: 30, title: 'سيد إرادته 👑', next: 60 },
+            { days: 60, title: 'الحُرُّ الأبيّ 🦅', next: 90 },
+            { days: 90, title: 'أسطورة التعافي 🔥', next: 365 }
+        ];
+
+        // Init
+        window.onload = function() {
+            loadState();
+            loadChatHistory();
+            setInterval(updateTimer, 1000);
+            updateTimer();
+            renderDynamicLists();
+            checkTodayCheckinStatus();
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try { appState = JSON.parse(saved); } catch(e) {}
+            } else {
+                saveState();
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        }
+
+        function updateTimer() {
+            const now = new Date();
+            const start = new Date(appState.startDate);
+            const diffMs = Math.max(0, now - start);
+
+            const secondsTotal = Math.floor(diffMs / 1000);
+            const days = Math.floor(secondsTotal / (3600 * 24));
+            const hours = Math.floor((secondsTotal % (3600 * 24)) / 3600);
+            const minutes = Math.floor((secondsTotal % 3600) / 60);
+            const seconds = Math.floor(secondsTotal % 60);
+
+            document.getElementById('streak-days').innerText = days;
+            document.getElementById('streak-hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('streak-minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('streak-seconds').innerText = String(seconds).padStart(2, '0');
+
+            if (days > appState.bestStreakDays) {
+                appState.bestStreakDays = days;
+                saveState();
+            }
+            document.getElementById('best-streak').innerText = `${appState.bestStreakDays} أيام`;
+
+            let currentRank = ranks[0];
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (days >= ranks[i].days) {
+                    currentRank = ranks[i];
+                    break;
+                }
+            }
+
+            document.getElementById('user-rank').innerText = currentRank.title;
+            document.getElementById('next-goal').innerText = `${currentRank.next} أيام`;
+
+            const goalProgress = Math.min(100, Math.round((days / currentRank.next) * 100));
+            document.getElementById('goal-percentage').innerText = `${goalProgress}%`;
+            document.getElementById('streak-progress').style.width = `${goalProgress}%`;
+        }
+
+        // Daily Check-in Logic
+        function checkTodayCheckinStatus() {
+            const todayStr = new Date().toDateString();
+            document.getElementById('checkin-date').innerText = new Date().toLocaleDateString('ar-EG', { weekday: 'long', month: 'short', day: 'numeric' });
+            
+            if (appState.lastCheckinDate === todayStr) {
+                document.getElementById('checkin-actions').classList.add('hidden');
+                document.getElementById('checkin-success-banner').classList.remove('hidden');
+            } else {
+                document.getElementById('checkin-actions').classList.remove('hidden');
+                document.getElementById('checkin-success-banner').classList.add('hidden');
+            }
+        }
+
+        function handleCheckinSuccess() {
+            const todayStr = new Date().toDateString();
+            appState.lastCheckinDate = todayStr;
+            saveState();
+            checkTodayCheckinStatus();
+        }
+
+        function openRelapseForm() {
+            selectedRelapseChips = [];
+            document.querySelectorAll('.chip-btn').forEach(btn => {
+                btn.classList.remove('bg-purplebrand-600', 'text-white', 'border-purplebrand-400');
+                btn.classList.add('bg-[#090514]', 'text-purplebrand-200');
+            });
+            document.getElementById('relapse-custom-text').value = '';
+            openModal('relapse');
+        }
+
+        function toggleChip(btn, text) {
+            if (selectedRelapseChips.includes(text)) {
+                selectedRelapseChips = selectedRelapseChips.filter(c => c !== text);
+                btn.classList.remove('bg-purplebrand-600', 'text-white', 'border-purplebrand-400');
+                btn.classList.add('bg-[#090514]', 'text-purplebrand-200');
+            } else {
+                selectedRelapseChips.push(text);
+                btn.classList.add('bg-purplebrand-600', 'text-white', 'border-purplebrand-400');
+                btn.classList.remove('bg-[#090514]', 'text-purplebrand-200');
+            }
+        }
+
+        async function submitRelapseToAI() {
+            const customText = document.getElementById('relapse-custom-text').value.trim();
+            if (selectedRelapseChips.length === 0 && !customText) {
+                alert('يرجى اختيار سبب واحد على الأقل أو كتابة التفاصيل.');
+                return;
+            }
+
+            // Reset Timer
+            appState.startDate = new Date().toISOString();
+            appState.lastCheckinDate = null;
+            saveState();
+            updateTimer();
+            checkTodayCheckinStatus();
+
+            closeModal('relapse');
+
+            // Construct AI Query
+            const reasonsFormatted = selectedRelapseChips.length > 0 ? selectedRelapseChips.join('، ') : 'لم يحدد خيارات سريعة';
+            const fullPrompt = `للأسف لقد حدثت انتكاسة اليوم. الأسباب المحددة هي: (${reasonsFormatted}).\nالتفاصيل والتوضيحات الإضافية بأسلوبي: "${customText || 'لا يوجد تفاصيل إضافية'}".\n\nأحتاج منك كأخصائي نفسي وموجه للتعافي تحليل هذه الأسباب فوراً، وإعطائي حلول عملية ومباشرة لمنع تكرارها، وكلمات تحفيزية لاستعادة عزيمتي بدون جلد الذات.`;
+
+            // Switch to AI tab and trigger analysis
+            switchTab('ai');
+            chatHistory.push({ sender: 'user', text: fullPrompt });
+            renderChatMessages();
+
+            await callGeminiAPI(fullPrompt);
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            ['home', 'risks', 'motivation', 'spiritual', 'ai'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).className = 'nav-item text-purplebrand-300/50 hover:text-purplebrand-200 flex flex-col items-center gap-1';
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            document.getElementById(`nav-${tabName}`).className = 'nav-item text-purplebrand-400 flex flex-col items-center gap-1';
+
+            if (tabName === 'ai') {
+                scrollToBottomChat();
+            }
+        }
+
+        // AI Chat Engine
+        function loadChatHistory() {
+            const savedChat = localStorage.getItem(CHAT_STORAGE_KEY);
+            if (savedChat) {
+                try { chatHistory = JSON.parse(savedChat); } catch(e) { chatHistory = []; }
+            }
+            if (chatHistory.length === 0) {
+                chatHistory.push({
+                    sender: 'ai',
+                    text: 'أهلاً بك يا بطل! أنا مساعدك الذكي الداعم في تطبيق "قوتك". أنّا هنا لاستماعك ومساعدتك دائماً سواءً للتحليل النفسي للانتكاسات، أو تقديم نصائح الثبات والصمود. كيف يمكنني دعمك الآن؟'
+                });
+            }
+            renderChatMessages();
+        }
+
+        function saveChatHistory() {
+            localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(chatHistory));
+        }
+
+        function clearChatHistory() {
+            if (confirm('هل تريد مسح سجل المحادثة؟')) {
+                chatHistory = [];
+                localStorage.removeItem(CHAT_STORAGE_KEY);
+                loadChatHistory();
+            }
+        }
+
+        function renderChatMessages() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = chatHistory.map(msg => {
+                if (msg.sender === 'user') {
+                    return `
+                        <div class="flex justify-end">
+                            <div class="bg-gradient-to-r from-purplebrand-600 to-indigo-600 text-white p-3 rounded-2xl rounded-tl-none max-w-[88%] text-xs leading-relaxed shadow-md">
+                                ${escapeHtml(msg.text)}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="flex justify-start gap-2 items-start">
+                            <div class="w-6 h-6 rounded-lg bg-purplebrand-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 mt-0.5">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="bg-[#130d24] border border-[#271a44] text-purplebrand-100 p-3 rounded-2xl rounded-tr-none max-w-[88%] text-xs leading-relaxed shadow-md space-y-1">
+                                <div>${formatAiResponse(msg.text)}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+            scrollToBottomChat();
+        }
+
+        function scrollToBottomChat() {
+            setTimeout(() => {
+                const container = document.getElementById('chat-messages');
+                if (container) container.scrollTop = container.scrollHeight;
+            }, 50);
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const messageText = input.value.trim();
+            if (!messageText) return;
+
+            chatHistory.push({ sender: 'user', text: messageText });
+            input.value = '';
+            renderChatMessages();
+
+            await callGeminiAPI(messageText);
+        }
+
+        async function callGeminiAPI(userPrompt) {
+            const sendBtn = document.getElementById('chat-send-btn');
+            sendBtn.disabled = true;
+            sendBtn.classList.add('opacity-50');
+
+            const container = document.getElementById('chat-messages');
+            const typingElem = document.createElement('div');
+            typingElem.id = 'typing-indicator';
+            typingElem.className = 'flex justify-start gap-2 items-center text-xs text-purplebrand-300 p-2';
+            typingElem.innerHTML = `
+                <div class="w-6 h-6 rounded-lg bg-purplebrand-600 flex items-center justify-center text-white text-[10px]">
+                    <i class="fa-solid fa-robot animate-pulse"></i>
+                </div>
+                <span class="animate-pulse">جاري التفكير والصياغة...</span>
+            `;
+            container.appendChild(typingElem);
+            scrollToBottomChat();
+
+            try {
+                const systemPrompt = `أنت مستشار ذكي، حكيم، وداعم نفسي متخصص في التعافي من إدمان الإباحية والعادة السرية في تطبيق "قوتك". 
+أسلوبك رحيم، مشجع، إيجابي، يستند إلى الوعي النفسي بدون توبيخ أو تحقير. 
+عند تحليل أسباب الانتكاسات، قدم خطة ثلاثية سريعة: (1. تفهم المحفز، 2. خطوة عمل فورية للتعديل، 3. كلمة تشجيعية).
+اجعل الردود واضحة ومناسبة تماماً للعرض على الأيفون.`;
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const payload = {
+                    contents: [
+                        {
+                            role: 'user',
+                            parts: [{ text: `${systemPrompt}\n\nطلب/رسالة المستخدم: ${userPrompt}` }]
+                        }
+                    ]
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                let aiReply = "عذراً، حدث خطأ أثناء الاتصال بالمساعد الذكي. حاول مرة أخرى.";
+
+                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                    aiReply = data.candidates[0].content.parts[0].text;
+                }
+
+                chatHistory.push({ sender: 'ai', text: aiReply });
+                saveChatHistory();
+
+            } catch (err) {
+                console.error("AI Error:", err);
+                chatHistory.push({ sender: 'ai', text: "عذراً، يبدو أن هناك مشكلة في الاتصال بالإنترنت. يرجى المحاولة لاحقاً." });
+            } finally {
+                const indicator = document.getElementById('typing-indicator');
+                if (indicator) indicator.remove();
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50');
+                renderChatMessages();
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function formatAiResponse(text) {
+            let formatted = escapeHtml(text);
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
+        }
+
+        function renderDynamicLists() {
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+            
+            const todayRisk = risksList[dayOfYear % risksList.length];
+            document.getElementById('daily-risk-text').innerText = `${todayRisk.title}: ${todayRisk.text}`;
+
+            const todaySpiritual = spiritualList[dayOfYear % spiritualList.length];
+            document.getElementById('daily-religious-text').innerText = todaySpiritual.content;
+
+            document.getElementById('risks-container').innerHTML = risksList.map(r => `
+                <div class="bg-[#130d24] border border-[#271a44] p-4 rounded-2xl space-y-2">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-skull-crossbones text-rose-400 text-xs"></i> ${r.title}
+                        </h3>
+                        <span class="text-[10px] bg-[#090514] text-purplebrand-300 font-bold px-2 py-0.5 rounded-md border border-[#271a44]">${r.category}</span>
+                    </div>
+                    <p class="text-xs text-purplebrand-200/80 leading-relaxed">${r.text}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('motivation-container').innerHTML = motivationList.map(m => `
+                <div class="bg-[#130d24] border border-[#271a44] p-4 rounded-2xl space-y-2">
+                    <h3 class="font-bold text-amber-400 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-lightbulb text-xs"></i> ${m.title}
+                    </h3>
+                    <p class="text-xs text-purplebrand-200/80 leading-relaxed">${m.text}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('spiritual-container').innerHTML = spiritualList.map(s => `
+                <div class="bg-[#130d24] border border-[#271a44] p-4 rounded-2xl space-y-2">
+                    <span class="text-[10px] bg-purplebrand-500/10 text-purplebrand-400 font-bold px-2 py-0.5 rounded-md border border-purplebrand-500/20">${s.type}</span>
+                    <p class="text-xs text-purplebrand-100 leading-relaxed font-medium">${s.content}</p>
+                </div>
+            `).join('');
+        }
+
+        function openModal(id) {
+            document.getElementById(`modal-${id}`).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
